@@ -7,7 +7,10 @@ import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -65,6 +68,72 @@ public class ConvertDate {
 
 		// when then
 		assertThat(yearMonthList).isEqualTo(List.of("202304", "202305", "202306", "202307", "202308"));
+	}
+
+	@DisplayName("날짜(yyyy-MM-dd) 형식으로 입력받았을 때 년월 리스트에 매핑되는 날짜 카운팅")
+	@Test
+	void countYearMonthWhenInputLocalDate() {
+		// given
+		// LocalDate 객체 List
+		List<LocalDate> localDateList = getLocalDates();
+
+		// yyyy-MM-dd 형식 문자열 List
+		List<String> dateStrList = localDateList.stream()
+				.map(localdate -> localdate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")))
+				.collect(Collectors.toList());
+
+		// yyyyMM 형식 문자열 List (그룹핑 기준)
+		List<String> yearMonthStrList = List.of("202304", "202305", "202306", "202307", "202308");
+
+		// yyyyMM 형식 문자열 리스트를 YearMonth 리스트로 변환
+//		List<YearMonth> yearMonths = yearMonthStrList.stream()
+//				.map(yearMonth -> YearMonth.parse(yearMonth, DateTimeFormatter.ofPattern("yyyyMM")))
+//				.collect(Collectors.toList());
+
+		Map<String, Long> resultMap = new HashMap<>();
+
+		// 그룹핑 리스트를 기준으로 yyyy-MM-dd 형식 문자열 값을 비교
+		for (String yearMonthStr : yearMonthStrList) {
+			long yearMonthCount = dateStrList.stream()
+					.map(dateStr -> {
+						LocalDate date = LocalDate.parse(dateStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+						return date.format(DateTimeFormatter.ofPattern("yyyyMM"));
+					})
+					.filter(yearMonthStr::equals)
+					.count();
+
+			resultMap.put(yearMonthStr, yearMonthCount);
+		}
+
+		HashMap<String, Long> expectedMap = new HashMap<>();
+		expectedMap.put("202304", 0L);
+		expectedMap.put("202305", 0L);
+		expectedMap.put("202306", 3L);
+		expectedMap.put("202307", 7L);
+		expectedMap.put("202308", 2L);
+
+		// when then
+		assertThat(resultMap).isEqualTo(expectedMap);
+	}
+
+	private List<LocalDate> getLocalDates() {
+		LocalDate localDate1 = LocalDate.of(2023, 8, 12);
+		LocalDate localDate2 = LocalDate.of(2023, 8, 27);
+		LocalDate localDate3 = LocalDate.of(2023, 7, 5);
+		LocalDate localDate4 = LocalDate.of(2023, 7, 6);
+		LocalDate localDate5 = LocalDate.of(2023, 7, 9);
+		LocalDate localDate6 = LocalDate.of(2023, 7, 30);
+		LocalDate localDate7 = LocalDate.of(2023, 7, 12);
+		LocalDate localDate8 = LocalDate.of(2023, 7, 5);
+		LocalDate localDate9 = LocalDate.of(2023, 7, 5);
+		LocalDate localDate10 = LocalDate.of(2023, 6, 5);
+		LocalDate localDate11 = LocalDate.of(2023, 6, 5);
+		LocalDate localDate12 = LocalDate.of(2023, 6, 13);
+
+		List<LocalDate> localDateList = List.of(localDate1, localDate2, localDate3, localDate4, localDate5, localDate6,
+				localDate7, localDate8, localDate9, localDate10, localDate11, localDate12);
+
+		return localDateList;
 	}
 
 }
