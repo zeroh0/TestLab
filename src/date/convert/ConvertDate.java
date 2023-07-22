@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -41,6 +43,28 @@ public class ConvertDate {
 		// when then
 		assertThat(fiveMonthsAgoStartDate).isEqualTo(LocalDate.of(2023, 4, 1));
 		assertThat(endDate).isEqualTo(LocalDate.of(2023, 8, 31));
+	}
+
+	@DisplayName("년월(yyyyMM) 형식으로 입력받았을 때 5개월 전부터 입력한 년월의 리스트를 가져온다.")
+	@Test
+	void getYearMonthListFromPreviousFiveMonthToInputMonthWhenInputYearMonth() {
+		// given
+		String input = "202308";
+		YearMonth inputYearMonth = YearMonth.parse(input, DateTimeFormatter.ofPattern("yyyyMM"));
+
+		final int range = 5;
+		LocalDate endDate = inputYearMonth.atEndOfMonth();
+		LocalDate fiveMonthsAgoStartDate = endDate.minusMonths(range - 1).withDayOfMonth(1);
+
+		List<String> yearMonthList = new ArrayList<>();
+
+		while (!fiveMonthsAgoStartDate.isAfter(endDate)) {
+			yearMonthList.add(fiveMonthsAgoStartDate.format(DateTimeFormatter.ofPattern("yyyyMM")));
+			fiveMonthsAgoStartDate = fiveMonthsAgoStartDate.plusMonths(1);
+		}
+
+		// when then
+		assertThat(yearMonthList).isEqualTo(List.of("202304", "202305", "202306", "202307", "202308"));
 	}
 
 }
