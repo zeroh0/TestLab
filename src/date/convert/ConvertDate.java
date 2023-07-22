@@ -6,10 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -90,7 +87,7 @@ public class ConvertDate {
 //				.map(yearMonth -> YearMonth.parse(yearMonth, DateTimeFormatter.ofPattern("yyyyMM")))
 //				.collect(Collectors.toList());
 
-		Map<String, Long> resultMap = new HashMap<>();
+		Map<String, Long> resultMap = new LinkedHashMap<>();
 
 		// 그룹핑 리스트를 기준으로 yyyy-MM-dd 형식 문자열 값을 비교
 		for (String yearMonthStr : yearMonthStrList) {
@@ -105,12 +102,14 @@ public class ConvertDate {
 			resultMap.put(yearMonthStr, yearMonthCount);
 		}
 
-		HashMap<String, Long> expectedMap = new HashMap<>();
+		HashMap<String, Long> expectedMap = new LinkedHashMap<>();
 		expectedMap.put("202304", 0L);
 		expectedMap.put("202305", 0L);
 		expectedMap.put("202306", 3L);
 		expectedMap.put("202307", 7L);
 		expectedMap.put("202308", 2L);
+
+		System.out.println("expectedMap = " + expectedMap);
 
 		// when then
 		assertThat(resultMap).isEqualTo(expectedMap);
