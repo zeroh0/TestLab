@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
+import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -113,6 +115,23 @@ public class ConvertDate {
 
 		// when then
 		assertThat(resultMap).isEqualTo(expectedMap);
+	}
+
+	@DisplayName("년월(yyyyMM) 형식으로 입력받았을 때 해당 년월의 전체 주(week)를 구한다.")
+	@Test
+	void getWeekAndMonthOfYear() {
+		// given
+		String inputYearMonth = "202304";
+		YearMonth yearMonth = YearMonth.parse(inputYearMonth, DateTimeFormatter.ofPattern("yyyyMM"));
+
+		TemporalField weekOfYearField = WeekFields.of(Locale.getDefault()).weekOfWeekBasedYear();
+		int firstWeek = yearMonth.atDay(1).get(weekOfYearField);
+		int lastWeek = yearMonth.atEndOfMonth().get(weekOfYearField);
+
+		int totalWeekOfMonth = lastWeek - firstWeek + 1;
+
+		// when then
+		assertThat(totalWeekOfMonth).isEqualTo(6);
 	}
 
 	private List<LocalDate> getLocalDates() {
