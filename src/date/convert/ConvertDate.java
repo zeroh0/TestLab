@@ -3,6 +3,8 @@ package date.convert;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -132,6 +134,23 @@ public class ConvertDate {
 
 		// when then
 		assertThat(totalWeekOfMonth).isEqualTo(6);
+	}
+
+	@DisplayName("날짜(yyyy-MM-dd) 형식으로 입력받았을 때 월 기준으로 몇 주차인지 구한다.")
+	@Test
+	void getWeekInMonthFromDate() throws ParseException {
+		// Ref: ISO-8601
+		String inputDate = "2023-04-30";
+
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		Date date = sdf.parse(inputDate);
+
+		Calendar cal = Calendar.getInstance();
+		cal.setTime(date);
+
+		int weekNumber = cal.get(Calendar.WEEK_OF_MONTH);
+
+		assertThat(weekNumber).isEqualTo(6);
 	}
 
 	private List<LocalDate> getLocalDates() {
