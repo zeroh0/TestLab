@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
@@ -153,6 +154,32 @@ public class ConvertDate {
 		assertThat(weekNumber).isEqualTo(6);
 	}
 
+	@DisplayName("년월(yyyyMM) 형식으로 입력받았을 때 주차(week)별로 해당하는 일자를 그룹핑")
+	@Test
+	void groupDatesByWeek() {
+		// Ref: ISO-8601
+		String inputDate = "202304";
+		YearMonth yearMonth = YearMonth.parse(inputDate, DateTimeFormatter.ofPattern("yyyyMM"));
+
+		LocalDate firstDayOfMonth = yearMonth.atDay(1);
+		LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
+
+		Map<Integer, List<LocalDate>> datesByWeek = new HashMap<>();
+		int weekNumber = 1;
+		LocalDate currentDay = firstDayOfMonth;
+
+		while (!currentDay.isAfter(lastDayOfMonth)) {
+			datesByWeek.computeIfAbsent(weekNumber, k -> new ArrayList<>()).add(currentDay);
+			if (currentDay.getDayOfWeek() == DayOfWeek.SATURDAY) { // 일~토
+				weekNumber++;
+			}
+			currentDay = currentDay.plusDays(1);
+		}
+
+		Map<Integer, List<LocalDate>> expectedMap = getGroupDatesByWeek();
+		assertThat(datesByWeek).isEqualTo(expectedMap);
+	}
+
 	private List<LocalDate> getLocalDates() {
 		LocalDate localDate1 = LocalDate.of(2023, 8, 12);
 		LocalDate localDate2 = LocalDate.of(2023, 8, 27);
@@ -171,6 +198,22 @@ public class ConvertDate {
 				localDate7, localDate8, localDate9, localDate10, localDate11, localDate12);
 
 		return localDateList;
+	}
+
+	private static Map<Integer, List<LocalDate>> getGroupDatesByWeek() {
+		Map<Integer, List<LocalDate>> datesByWeek = new HashMap<>();
+		datesByWeek.put(1, List.of(LocalDate.of(2023, 4, 1)));
+		datesByWeek.put(2, List.of(LocalDate.of(2023, 4, 2), LocalDate.of(2023, 4, 3), LocalDate.of(2023, 4, 4), LocalDate.of(2023, 4, 5),
+				LocalDate.of(2023, 4, 6), LocalDate.of(2023, 4, 7), LocalDate.of(2023, 4, 8)));
+		datesByWeek.put(3, List.of(LocalDate.of(2023, 4, 9), LocalDate.of(2023, 4, 10), LocalDate.of(2023, 4, 11), LocalDate.of(2023, 4, 12),
+				LocalDate.of(2023, 4, 13), LocalDate.of(2023, 4, 14), LocalDate.of(2023, 4, 15)));
+		datesByWeek.put(4, List.of(LocalDate.of(2023, 4, 16), LocalDate.of(2023, 4, 17), LocalDate.of(2023, 4, 18), LocalDate.of(2023, 4, 19),
+				LocalDate.of(2023, 4, 20), LocalDate.of(2023, 4, 21), LocalDate.of(2023, 4, 22)));
+		datesByWeek.put(5, List.of(LocalDate.of(2023, 4, 23), LocalDate.of(2023, 4, 24), LocalDate.of(2023, 4, 25), LocalDate.of(2023, 4, 26),
+				LocalDate.of(2023, 4, 27), LocalDate.of(2023, 4, 28), LocalDate.of(2023, 4, 29)));
+		datesByWeek.put(6, List.of(LocalDate.of(2023, 4, 30)));
+
+		return datesByWeek;
 	}
 
 }
