@@ -213,6 +213,27 @@ public class ConvertDate {
 		assertThat(dayOfWeekShortDisplayName).isEqualTo("금");
 	}
 
+	@DisplayName("년월(yyyy-MM) 형식으로 입력받았을 때 요일별로 해당하는 일자를 그룹핑")
+	@Test
+	void groupDatesByDayOfWeek() {
+		String inputDate = "202304";
+		YearMonth yearMonth = YearMonth.parse(inputDate, DateTimeFormatter.ofPattern("yyyyMM"));
+
+		LocalDate firstDayOfMonth = yearMonth.atDay(1);
+		LocalDate lastDayOfMonth = yearMonth.atEndOfMonth();
+
+		Map<DayOfWeek, List<LocalDate>> datesByDayOfWeek = new HashMap<>();
+		LocalDate currentDay = firstDayOfMonth;
+
+		while (!currentDay.isAfter(lastDayOfMonth)) {
+			DayOfWeek dayOfWeek = currentDay.getDayOfWeek();
+			datesByDayOfWeek.computeIfAbsent(dayOfWeek, k -> new ArrayList<>()).add(currentDay);
+			currentDay = currentDay.plusDays(1);
+		}
+
+		assertThat(datesByDayOfWeek).isEqualTo(getGroupDatesByDayOfWeek());
+	}
+
 	private List<LocalDate> getLocalDates() {
 		LocalDate localDate1 = LocalDate.of(2023, 8, 12);
 		LocalDate localDate2 = LocalDate.of(2023, 8, 27);
@@ -247,6 +268,77 @@ public class ConvertDate {
 		datesByWeek.put(6, List.of(LocalDate.of(2023, 4, 30)));
 
 		return datesByWeek;
+	}
+
+	private Map<DayOfWeek, List<LocalDate>> getGroupDatesByDayOfWeek() {
+		Map<DayOfWeek, List<LocalDate>> groupDatesByDayOfWeek = new HashMap<>();
+		groupDatesByDayOfWeek.put(
+			DayOfWeek.SUNDAY,
+			List.of(
+				LocalDate.of(2023, 4, 2),
+				LocalDate.of(2023, 4, 9),
+				LocalDate.of(2023, 4, 16),
+				LocalDate.of(2023, 4, 23),
+				LocalDate.of(2023, 4, 30)
+			)
+		);
+		groupDatesByDayOfWeek.put(
+			DayOfWeek.MONDAY,
+			List.of(
+				LocalDate.of(2023, 4, 3),
+				LocalDate.of(2023, 4, 10),
+				LocalDate.of(2023, 4, 17),
+				LocalDate.of(2023, 4, 24)
+			)
+		);
+		groupDatesByDayOfWeek.put(
+			DayOfWeek.TUESDAY,
+			List.of(
+				LocalDate.of(2023, 4, 4),
+				LocalDate.of(2023, 4, 11),
+				LocalDate.of(2023, 4, 18),
+				LocalDate.of(2023, 4, 25)
+			)
+		);
+		groupDatesByDayOfWeek.put(
+			DayOfWeek.WEDNESDAY,
+			List.of(
+				LocalDate.of(2023, 4, 5),
+				LocalDate.of(2023, 4, 12),
+				LocalDate.of(2023, 4, 19),
+				LocalDate.of(2023, 4, 26)
+			)
+		);
+		groupDatesByDayOfWeek.put(
+			DayOfWeek.THURSDAY,
+			List.of(
+				LocalDate.of(2023, 4, 6),
+				LocalDate.of(2023, 4, 13),
+				LocalDate.of(2023, 4, 20),
+				LocalDate.of(2023, 4, 27)
+			)
+		);
+		groupDatesByDayOfWeek.put(
+			DayOfWeek.FRIDAY,
+			List.of(
+				LocalDate.of(2023, 4, 7),
+				LocalDate.of(2023, 4, 14),
+				LocalDate.of(2023, 4, 21),
+				LocalDate.of(2023, 4, 28)
+			)
+		);
+		groupDatesByDayOfWeek.put(
+			DayOfWeek.SATURDAY,
+			List.of(
+				LocalDate.of(2023, 4, 1),
+				LocalDate.of(2023, 4, 8),
+				LocalDate.of(2023, 4, 15),
+				LocalDate.of(2023, 4, 22),
+				LocalDate.of(2023, 4, 29)
+			)
+		);
+
+		return groupDatesByDayOfWeek;
 	}
 
 }
