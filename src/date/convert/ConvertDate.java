@@ -9,6 +9,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.time.temporal.TemporalField;
 import java.time.temporal.WeekFields;
 import java.util.*;
@@ -178,6 +179,22 @@ public class ConvertDate {
 
 		Map<Integer, List<LocalDate>> expectedMap = getGroupDatesByWeek();
 		assertThat(datesByWeek).isEqualTo(expectedMap);
+	}
+
+	@DisplayName("입력받은 날짜의 요일을 영문으로 구한다.")
+	@Test
+	void getDayOfWeekInEnglish() {
+		LocalDate inputDate = LocalDate.of(2023, 7, 28);
+
+		DayOfWeek dayOfWeek = inputDate.getDayOfWeek();
+
+		String dayOfWeekFullDisplayName = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.US); // Friday
+		String dayOfWeekNarrowDisplayName = dayOfWeek.getDisplayName(TextStyle.NARROW, Locale.US); // F
+		String dayOfWeekShortDisplayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.US); // Fri
+
+		assertThat(dayOfWeekFullDisplayName).isEqualTo("Friday");
+		assertThat(dayOfWeekNarrowDisplayName).isEqualTo("F");
+		assertThat(dayOfWeekShortDisplayName).isEqualTo("Fri");
 	}
 
 	private List<LocalDate> getLocalDates() {
