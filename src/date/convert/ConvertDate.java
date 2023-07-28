@@ -197,6 +197,22 @@ public class ConvertDate {
 		assertThat(dayOfWeekShortDisplayName).isEqualTo("Fri");
 	}
 
+	@DisplayName("입력받은 날짜의 요일을 한글로 구한다.")
+	@Test
+	void getDayOfWeekInKorean() {
+		LocalDate inputDate = LocalDate.of(2023, 7, 28);
+
+		DayOfWeek dayOfWeek = inputDate.getDayOfWeek();
+
+		String dayOfWeekFullDisplayName = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREA); // 금요일
+		String dayOfWeekNarrowDisplayName = dayOfWeek.getDisplayName(TextStyle.NARROW, Locale.KOREA); // 금
+		String dayOfWeekShortDisplayName = dayOfWeek.getDisplayName(TextStyle.SHORT, Locale.KOREA); // 금
+
+		assertThat(dayOfWeekFullDisplayName).isEqualTo("금요일");
+		assertThat(dayOfWeekNarrowDisplayName).isEqualTo("금");
+		assertThat(dayOfWeekShortDisplayName).isEqualTo("금");
+	}
+
 	private List<LocalDate> getLocalDates() {
 		LocalDate localDate1 = LocalDate.of(2023, 8, 12);
 		LocalDate localDate2 = LocalDate.of(2023, 8, 27);
