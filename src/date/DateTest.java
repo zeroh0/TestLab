@@ -1,4 +1,4 @@
-package date.convert;
+package date;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class ConvertDate {
+public class DateTest {
 
 	@DisplayName("년월(yyyyMM) 형식으로 입력받았을 때 해당 년월의 시작일자와 종료일자를 가져온다.")
 	@Test

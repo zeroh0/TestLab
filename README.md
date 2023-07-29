@@ -1,7 +1,6 @@
 # TestLab
 
 - date
-  - convert
-    - [ConvertDate](./src/date/convert/ConvertDate.java)
+  - [DateTest](./src/date/DateTest.java)
 - serialization
   - [SerializationTest](./src/serialization/SerializationTest.java)
